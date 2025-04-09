@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useMemo, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { Field, Fieldset, Input, Label, Legend } from "@headlessui/react";
 import clsx from "clsx";
 import Button from "@/components/atoms/button";
-import { useRouter } from "next/navigation";
 import useUserStore from "@/stores/user/store";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
-  const login = useUserStore((state) => state.login);
-  const register = useUserStore((state) => state.register);
-
   const router = useRouter();
+
+  const login = useUserStore((state) => state.login)(router);
+  const register = useUserStore((state) => state.register)(router);
+
   const [isLogin, setIsLogin] = useState(true);
 
   const [email, setEmail] = useState("");
@@ -23,12 +24,10 @@ const LoginPage = () => {
 
     if (isLogin) {
       await login(email, password);
-      router.push("/");
       return;
     }
 
-    await register(email, name, password);
-    router.push("/");
+    await register(name, email, password);
   };
 
   return (

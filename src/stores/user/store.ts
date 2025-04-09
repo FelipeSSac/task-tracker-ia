@@ -1,44 +1,67 @@
-import { account, ID } from "@/client/api";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import UserInterface from "./interface";
+import { account } from "@/client/api/account";
+import { ID } from "@/client/api/";
 
-const useUserStore = create<UserInterface>((set) => ({
-  user: null,
+const useUserStore = create<UserInterface>()(
+  persist(
+    (set) => ({
+      user: null,
 
-  setLoggedInUser: (user) => set({ user }),
+      setLoggedInUser: (user) => set({ user }),
 
-  login: async (email, password) => {
-    await account.createEmailPasswordSession(email, password);
+      login: (router) => {
+        return async (email, password) => {
+          await account.createEmailPasswordSession(email, password);
 
-    const user = await account.get();
-    set({ user });
-  },
+          const user = await account.get();
+          set({ user });
+          localStorage.setItem("user", JSON.stringify(user));
 
-  register: async (name, email, password) => {
-    const id = ID.unique();
+          router.push("/");
+        };
+      },
 
-    await account.create(id, email, password, name);
-    await account.createEmailPasswordSession(email, password);
+      register: (router) => {
+        return async (name, email, password) => {
+          const id = ID.unique();
 
-    const user = await account.get();
-    set({ user });
-  },
+          await account.create(id, email, password, name);
+          await account.createEmailPasswordSession(email, password);
 
-  logout: async () => {
-    await account.deleteSession("current");
+          const user = await account.get();
+          set({ user });
+          localStorage.setItem("user", JSON.stringify(user));
 
-    set({ user: null });
-  },
+          router.push("/");
+        };
+      },
 
-  fetchUser: async () => {
-    try {
-      const user = await account.get();
+      logout: (router) => {
+        return async () => {
+          await account.deleteSession("current");
 
-      set({ user });
-    } catch (error) {
-      set({ user: null });
+          set({ user: null });
+
+          router.push("/auth");
+        };
+      },
+
+      fetchUser: async () => {
+        try {
+          const user = await account.get();
+
+          set({ user });
+        } catch (error) {
+          set({ user: null });
+        }
+      },
+    }),
+    {
+      name: "user-storage",
     }
-  },
-}));
+  )
+);
 
 export default useUserStore;
