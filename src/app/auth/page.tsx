@@ -13,14 +13,17 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
 
-  const login = useUserStore((state) => state.login)(router);
-  const register = useUserStore((state) => state.register)(router);
+  const login = useUserStore((state) => state.login);
+  const register = useUserStore((state) => state.register);
 
   const handleLogin = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
-      await login(data.email, data.password);
-      toast.success("Successfully logged in!");
+      const { success } = await login(data.email, data.password);
+      if (success) {
+        toast.success("Successfully logged in!");
+        router.push("/board");
+      }
     } catch (error) {
       console.error("Login failed:", error);
       toast.error(
@@ -36,8 +39,11 @@ const AuthPage = () => {
   const handleRegister = async (data: SignupFormData) => {
     try {
       setIsLoading(true);
-      await register(data.name, data.email, data.password);
-      toast.success("Account created successfully!");
+      const { success } = await register(data.name, data.email, data.password);
+      if (success) {
+        toast.success("Account created successfully!");
+        router.push("/board");
+      }
     } catch (error) {
       console.error("Registration failed:", error);
       toast.error(

@@ -13,25 +13,22 @@ const useUserStore = create<UserInterface>()(
 
       setLoggedInUser: (user) => set({ user }),
 
-      login: (router) => {
-        return async (email, password) => {
-          const user = await handleLogin(router)(email, password);
-          set({ user });
-        };
+      login: async (email: string, password: string) => {
+        const { user } = await handleLogin(email, password);
+        set({ user });
+        return { success: true };
       },
 
-      register: (router) => {
-        return async (name, email, password) => {
-          const user = await handleRegister(router)(name, email, password);
-          set({ user });
-        };
+      register: async (name: string, email: string, password: string) => {
+        const { user } = await handleRegister(name, email, password);
+        set({ user });
+        return { success: true };
       },
 
-      logout: (router) => {
-        return async () => {
-          await handleLogout(router)();
-          set({ user: null });
-        };
+      logout: async () => {
+        await handleLogout();
+        set({ user: null });
+        return { success: true };
       },
 
       fetchUser: async () => {
