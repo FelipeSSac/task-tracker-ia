@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/atoms/button";
+import { Button } from "@/components/atoms/button";
 import useUserStore from "@/stores/user/store";
 import { useRouter } from "next/navigation";
 

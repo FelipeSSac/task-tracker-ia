@@ -1,6 +1,10 @@
-import { Button as HeadlessButton } from "@headlessui/react";
-import { ComponentProps } from "react";
+import { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "./variants";
 
-type ButtonProps = ComponentProps<typeof HeadlessButton>;
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
 
-export default ButtonProps;
+export type { ButtonProps };

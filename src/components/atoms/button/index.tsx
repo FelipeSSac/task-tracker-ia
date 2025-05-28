@@ -1,15 +1,22 @@
-import { Button as HeadlessButton } from "@headlessui/react";
-import ButtonProps from "./props";
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 
-const Button = ({ children, ...props }: ButtonProps) => {
-  return (
-    <HeadlessButton
-      className="min-w-20 inline-flex items-center justify-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white cursor-pointer"
-      {...props}
-    >
-      {children}
-    </HeadlessButton>
-  );
-};
+import { cn } from "@/lib/utils/cn";
+import { buttonVariants } from "./variants";
+import { ButtonProps } from "./props";
 
-export default Button;
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = "Button";
+
+export { Button, buttonVariants };
