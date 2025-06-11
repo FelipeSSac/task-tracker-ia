@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { UserInterface } from "./interface";
+import { type UserInterface } from "./interface";
 import { handleLogin } from "./handlers/login";
 import { handleRegister } from "./handlers/register";
 import { handleLogout } from "./handlers/logout";

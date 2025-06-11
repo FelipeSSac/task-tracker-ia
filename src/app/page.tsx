@@ -1,7 +1,8 @@
-"use client";
 
 import { redirect } from "next/navigation";
 
-export default function Home() {
+async function Home() {
   redirect("/board");
 }
+
+export default Home;

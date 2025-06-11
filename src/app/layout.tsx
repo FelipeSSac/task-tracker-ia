@@ -5,16 +5,12 @@ import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Task Tracker AI",
   description: "Organize your projects with style and powered by AI",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -24,3 +20,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+export { metadata };
+export default RootLayout;

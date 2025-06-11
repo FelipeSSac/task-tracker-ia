@@ -13,4 +13,4 @@ interface UserInterface {
   setLoggedInUser: (user: Models.User<Models.Preferences> | null) => void;
 }
 
-export type { UserInterface };
+export { type UserInterface };

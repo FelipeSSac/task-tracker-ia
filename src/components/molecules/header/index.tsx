@@ -9,18 +9,9 @@ import {
 } from "@/components/atoms/dropdown-menu";
 import useUserStore from "@/stores/user/store";
 import { Calendar, LogOut, Plus, User } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const router = useRouter();
-
-  const user = useUserStore((state) => state.user);
-  const onLogout = useUserStore((state) => state.logout)(router);
-
-  const initials = user?.name
-    .split(" ")
-    .map((name) => name[0]?.toUpperCase())
-    .join("");
+  const logout = useUserStore((state) => state.logout);
 
   return (
     <header className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50">
@@ -50,7 +41,7 @@ const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onLogout}>
+              <DropdownMenuItem onClick={logout}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </DropdownMenuItem>

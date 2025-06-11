@@ -1,53 +1,8 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/atoms/avatar";
-import { Badge } from "@/components/atoms/badge";
-import { Button } from "@/components/atoms/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/atoms/card";
-import {
-  Calendar,
-  MessageSquare,
-  MoreHorizontal,
-  Paperclip,
-  Plus,
-} from "lucide-react";
 import { useState } from "react";
-
-interface Board {
-  todo: Task[];
-  inProgress: Task[];
-  done: Task[];
-  cancelled: Task[];
-}
-
-interface Task {
-  id: string;
-  name: string;
-}
-
-interface Card {
-  id: string;
-  title: string;
-  description?: string;
-  assignee?: string;
-  dueDate?: string;
-  comments?: number;
-  attachments?: number;
-  priority?: string;
-  tags?: string[];
-}
-
-interface Column {
-  id: string;
-  title: string;
-  color: string;
-  cards: Card[];
-}
+import { BoardColumn } from "@/components/organisms/board-column";
+import { Column } from "@/types/column";
 
 const Board = () => {
   const [columns, setColumns] = useState<Column[]>([
@@ -218,119 +173,14 @@ const Board = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {columns.map((column) => (
-          <div
+          <BoardColumn
             key={column.id}
-            className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg"
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, column.id)}
-          >
-            {/* Column Header */}
-            <div
-              className={`${column.color} p-4 rounded-t-xl border-b border-white/20`}
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-gray-800 flex items-center">
-                  {column.title}
-                  <Badge variant="secondary" className="ml-2 bg-white/50">
-                    {column.cards.length}
-                  </Badge>
-                </h2>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Cards */}
-            <div className="p-4 space-y-3 min-h-[200px]">
-              {column.cards.map((card) => (
-                <Card
-                  key={card.id}
-                  className="cursor-move hover:shadow-lg transition-all duration-200 bg-white/80 backdrop-blur-sm border-white/30 hover:scale-[1.02]"
-                  draggable
-                  onDragStart={() => handleDragStart(card.id, column.id)}
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                      <CardTitle className="text-sm font-medium text-gray-800 leading-tight">
-                        {card.title}
-                      </CardTitle>
-                      {card.priority && (
-                        <div
-                          className={`w-2 h-2 rounded-full ${getPriorityColor(
-                            card.priority
-                          )} flex-shrink-0 mt-1`}
-                        />
-                      )}
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="pt-0 space-y-3">
-                    {card.description && (
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        {card.description}
-                      </p>
-                    )}
-
-                    {card.tags && (
-                      <div className="flex flex-wrap gap-1">
-                        {card.tags.map((tag, index) => (
-                          <Badge
-                            key={index}
-                            variant="secondary"
-                            className="text-xs px-2 py-0.5 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-purple-200"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <div className="flex items-center space-x-3">
-                        {card.comments && (
-                          <div className="flex items-center space-x-1">
-                            <MessageSquare className="h-3 w-3" />
-                            <span>{card.comments}</span>
-                          </div>
-                        )}
-                        {card.attachments && (
-                          <div className="flex items-center space-x-1">
-                            <Paperclip className="h-3 w-3" />
-                            <span>{card.attachments}</span>
-                          </div>
-                        )}
-                        {card.dueDate && (
-                          <div className="flex items-center space-x-1 text-orange-600">
-                            <Calendar className="h-3 w-3" />
-                            <span>
-                              {new Date(card.dueDate).toLocaleDateString()}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {card.assignee && (
-                        <Avatar className="h-6 w-6">
-                          <AvatarFallback className="text-xs bg-gradient-to-r from-purple-400 to-blue-400 text-white">
-                            {card.assignee}
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-
-              <Button
-                variant="ghost"
-                className="w-full border-2 border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50/50 transition-colors"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add a card
-              </Button>
-            </div>
-          </div>
+            column={column}
+            handleDragOver={handleDragOver}
+            handleDrop={handleDrop}
+            handleDragStart={handleDragStart}
+            getPriorityColor={getPriorityColor}
+          />
         ))}
       </div>
     </div>
