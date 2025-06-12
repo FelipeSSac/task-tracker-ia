@@ -5,37 +5,24 @@ import { handleLogin } from "./handlers/login";
 import { handleRegister } from "./handlers/register";
 import { handleLogout } from "./handlers/logout";
 import { handleFetchUser } from "./handlers/fetch-user";
+import { Models } from "appwrite";
 
 const useUserStore = create<UserInterface>()(
   persist(
-    (set) => ({
-      user: null,
-
-      setLoggedInUser: (user) => set({ user }),
-
-      login: async (email: string, password: string) => {
-        const { user } = await handleLogin(email, password);
+    (set) => {
+      const setUser = (user: Models.User<Models.Preferences> | null) => {
         set({ user });
-        return { success: true };
-      },
+      };
 
-      register: async (name: string, email: string, password: string) => {
-        const { user } = await handleRegister(name, email, password);
-        set({ user });
-        return { success: true };
-      },
-
-      logout: async () => {
-        await handleLogout();
-        set({ user: null });
-        return { success: true };
-      },
-
-      fetchUser: async () => {
-        const user = await handleFetchUser();
-        set({ user });
-      },
-    }),
+      return {
+        user: null,
+        setUser,
+        login: handleLogin(setUser),
+        register: handleRegister(setUser),
+        logout: handleLogout(setUser),
+        fetchUser: handleFetchUser(setUser),
+      };
+    },
     {
       name: "user-storage",
     }

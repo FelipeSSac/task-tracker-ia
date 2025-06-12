@@ -1,18 +1,17 @@
-import { createSessionClient } from "@/lib/server";
-import { AuthError } from "@/lib/exception/auth-error";
-import { getErrorMessage } from "./get-error-message";
+import { account } from "@/lib/server";
+import { Models } from "node-appwrite";
 
-const handleLogin = async (email: string, password: string) => {
-  try {
-    const { account } = await createSessionClient();
-
-    await account.createEmailPasswordSession(email, password);
-    const user = await account.get();
-
-    return { user, success: true };
-  } catch (error) {
-    throw new AuthError(getErrorMessage(error));
-  }
+const handleLogin = (
+  setUser: (user: Models.User<Models.Preferences> | null) => void
+) => {
+  return async (email: string, password: string) => {
+    try {
+      await account.createEmailPasswordSession(email, password);
+    } catch (error) {
+      // throw new AuthError(getErrorMessage(error));
+      console.error(error);
+    }
+  };
 };
 
 export { handleLogin };

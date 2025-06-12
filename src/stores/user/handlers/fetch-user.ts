@@ -1,14 +1,18 @@
-import { createSessionClient } from "@/lib/server";
+import { account } from "@/lib/server";
+import { Models } from "node-appwrite";
 
-const handleFetchUser = async () => {
-  try {
-    const { account } = await createSessionClient();
+const handleFetchUser = (
+  setUser: (user: Models.User<Models.Preferences> | null) => void
+) => {
+  return async () => {
+    try {
+      const user = await account.get();
 
-    const user = await account.get();
-    return user;
-  } catch (error) {
-    return null;
-  }
+      setUser(user);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 };
 
 export { handleFetchUser };

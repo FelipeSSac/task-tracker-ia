@@ -12,6 +12,7 @@ import { Calendar, LogOut, Plus, User } from "lucide-react";
 
 const Header = () => {
   const logout = useUserStore((state) => state.logout);
+  const user = useUserStore((state) => state.user);
 
   return (
     <header className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50">
@@ -22,7 +23,7 @@ const Header = () => {
               <Calendar className="h-6 w-6 text-white" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              TaskFlow Board
+              TaskFlow Board {user?.name}
             </h1>
           </div>
         </div>

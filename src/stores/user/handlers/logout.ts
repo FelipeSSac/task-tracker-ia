@@ -1,16 +1,19 @@
-import { createSessionClient } from "@/lib/server";
-import { AuthError } from "@/lib/exception/auth-error";
-import { getErrorMessage } from "./get-error-message";
+import { account } from "@/lib/server";
+import { Models } from "node-appwrite";
 
-const handleLogout = async () => {
-  try {
-    const { account } = await createSessionClient();
+const handleLogout = (
+  setUser: (user: Models.User<Models.Preferences> | null) => void
+) => {
+  return async () => {
+    try {
+      await account.deleteSession("current");
 
-    await account.deleteSession("current");
-    return { success: true };
-  } catch (error) {
-    throw new AuthError(getErrorMessage(error));
-  }
+      setUser(null);
+    } catch (error) {
+      // throw new AuthError(getErrorMessage(error));
+      console.error(error);
+    }
+  };
 };
 
 export { handleLogout };

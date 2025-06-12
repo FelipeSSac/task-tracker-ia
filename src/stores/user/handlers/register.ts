@@ -1,25 +1,23 @@
-import { ID, createSessionClient } from "@/lib/server";
+import { ID, account } from "@/lib/server";
 import { AuthError } from "@/lib/exception/auth-error";
 import { getErrorMessage } from "./get-error-message";
+import { Models } from "appwrite";
 
-const handleRegister = async (
-  name: string,
-  email: string,
-  password: string
+const handleRegister = (
+  setUser: (user: Models.User<Models.Preferences> | null) => void
 ) => {
-  try {
-    const { account } = await createSessionClient();
-    const id = ID.unique();
+  return async (name: string, email: string, password: string) => {
+    try {
+      const id = ID.unique();
 
-    await account.create(id, email, password, name);
-    await account.createSession(email, password);
+      const user = await account.create(id, email, password, name);
 
-    const user = await account.get();
-
-    return { user, success: true };
-  } catch (error) {
-    throw new AuthError(getErrorMessage(error));
-  }
+      setUser(user);
+    } catch (error) {
+      // throw new AuthError(getErrorMessage(error));
+      console.error(error);
+    }
+  };
 };
 
 export { handleRegister };
